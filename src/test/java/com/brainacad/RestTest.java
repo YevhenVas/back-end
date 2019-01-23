@@ -151,4 +151,31 @@ public class RestTest{
         System.out.println(body);
         String LastName = JsonUtils.stringFromJSONByPath(body, "$.data.last_name");
         System.out.println(LastName);
-        Assert.assertEquals("Name check", "Weaver", LastName);}}
+        Assert.assertEquals("Name check", "Weaver", LastName);}
+
+    @Test//GET метод
+    public void checkGetResponseID() throws IOException {
+        String endpoint="/api/users/2";
+        //Выполняем REST GET запрос с нашими параметрами
+        // и сохраняем результат в переменную response.
+        HttpResponse response = HttpClientHelper.get(URL+endpoint,null);
+        //Конвертируем входящий поток тела ответа в строку
+        String body=HttpClientHelper.getBodyFromResponse(response);
+        System.out.println(body);
+        int ID = JsonUtils.intFromJSONByPath(body, "$.data.id");
+        System.out.println(ID);
+        Assert.assertEquals("Name check", 2, ID);}
+
+        @Test//GET метод
+    public void checkGetResponseBodyNotFound() throws IOException {
+        String endpoint="/api/users/23";
+
+        //Выполняем REST GET запрос с нашими параметрами
+        // и сохраняем результат в переменную response.
+        HttpResponse response = HttpClientHelper.get(URL+endpoint,null);
+
+        //Конвертируем входящий поток тела ответа в строку
+        //String body=HttpClientHelper.getBodyFromResponse(response);
+        System.out.println(response);
+        Assert.assertNotEquals("Response should be 400", 400, response);
+    }}
