@@ -1,5 +1,6 @@
 package com.brainacad;
 
+import com.jayway.jsonpath.JsonPath;
 import org.apache.http.HttpResponse;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,13 +19,13 @@ public class RestTest{
 
         //TODO: Избавится он хедеров в тесте добавив методы с хедерами по умолчанию в класс HttpClientHelper
         //Создаём переменую headers типа Map
-        Map<String, String> headers=new HashMap<>();
+       // Map<String, String> headers=new HashMap<>();
         //Добавляем в headers наш заголовок
-        headers.put("User-Agent", "My-Test-User-Agent");
+        //headers.put("User-Agent", "My-Test-User-Agent");
 
         //Выполняем REST GET запрос с нашими параметрами
         // и сохраняем результат в переменную response.
-        HttpResponse response = HttpClientHelper.get(URL+endpoint,"page=2", headers);
+        HttpResponse response = HttpClientHelper.get(URL+endpoint,"page=2");
 
         //получаем статус код из ответа
         int statusCode = response.getStatusLine().getStatusCode();
@@ -38,13 +39,13 @@ public class RestTest{
 
         //TODO: Избавится он хедеров в тесте добавив методы с хедерами по умолчанию в класс HttpClientHelper
         //Создаём переменую headers типа Map
-        Map<String, String> headers=new HashMap<>();
+        //Map<String, String> headers=new HashMap<>();
         //Добавляем в headers наш заголовок
-        headers.put("User-Agent", "My-Test-User-Agent");
+        //headers.put("User-Agent", "My-Test-User-Agent");
 
         //Выполняем REST GET запрос с нашими параметрами
         // и сохраняем результат в переменную response.
-        HttpResponse response = HttpClientHelper.get(URL+endpoint,"page=2", headers);
+        HttpResponse response = HttpClientHelper.get(URL+endpoint,"page=2");
 
         //Конвертируем входящий поток тела ответа в строку
         String body=HttpClientHelper.getBodyFromResponse(response);
@@ -58,16 +59,16 @@ public class RestTest{
 
         //TODO: Избавится он хедеров в тесте добавив методы с хедерами по умолчанию в класс HttpClientHelper
         //Создаём переменую headers типа Map
-        Map<String, String> headers=new HashMap<>();
+        //Map<String, String> headers=new HashMap<>();
         //Добавляем в headers наш заголовок
-        headers.put("User-Agent", "My-Test-User-Agent");
+        //headers.put("User-Agent", "My-Test-User-Agent");
 
         //создаём тело запроса
         String requestBody="{\"name\": \"morpheus\",\"job\": \"leader\"}";
 
         //Выполняем REST POST запрос с нашими параметрами
         // и сохраняем результат в переменную response.
-        HttpResponse response = HttpClientHelper.post(URL+endpoint,requestBody, headers);
+        HttpResponse response = HttpClientHelper.post(URL+endpoint,requestBody);
 
         //получаем статус код из ответа
         int statusCode = response.getStatusLine().getStatusCode();
@@ -81,24 +82,73 @@ public class RestTest{
 
         //TODO: Избавится он хедеров в тесте добавив методы с хедерами по умолчанию в класс HttpClientHelper
         //Создаём переменую headers типа Map
-        Map<String, String> headers=new HashMap<>();
+        //Map<String, String> headers=new HashMap<>();
         //Добавляем в headers наш заголовок
-        headers.put("User-Agent", "My-Test-User-Agent");
+        //headers.put("User-Agent", "My-Test-User-Agent");
 
         //создаём тело запроса
         String requestBody="{\"name\": \"morpheus\",\"job\": \"leader\"}";
 
         //Выполняем REST POST запрос с нашими параметрами
         // и сохраняем результат в переменную response.
-        HttpResponse response = HttpClientHelper.post(URL+endpoint,requestBody, headers);
+        HttpResponse response = HttpClientHelper.post(URL+endpoint,requestBody);
 
         //Конвертируем входящий поток тела ответа в строку
         String body=HttpClientHelper.getBodyFromResponse(response);
         System.out.println(body);
         Assert.assertNotEquals("Body shouldn't be null", null, body);
     }
+    @Test//GET метод
+    public void checkGetResponseStatusCode2() throws IOException {
+        String endpoint="/api/users/2";
+
+        //Выполняем REST GET запрос с нашими параметрами
+        // и сохраняем результат в переменную response.
+        HttpResponse response = HttpClientHelper.get(URL+endpoint,null);
+
+        //получаем статус код из ответа
+        int statusCode = response.getStatusLine().getStatusCode();
+        System.out.println("Response Code : " + statusCode);
+        Assert.assertEquals("Response status code should be 200", 200, statusCode);
+    }
+    @Test//GET метод
+    public void checkGetResponseBodyNotNull2() throws IOException {
+        String endpoint="/api/users/2";
+
+        //Выполняем REST GET запрос с нашими параметрами
+        // и сохраняем результат в переменную response.
+        HttpResponse response = HttpClientHelper.get(URL+endpoint,null);
+
+        //Конвертируем входящий поток тела ответа в строку
+        String body=HttpClientHelper.getBodyFromResponse(response);
+        System.out.println(body);
+        Assert.assertNotEquals("Body shouldn't be null", null, body);
+    }
+    @Test//GET метод
+    public void checkGetResponseFirstName() throws IOException {
+        String endpoint="/api/users/2";
+        //Выполняем REST GET запрос с нашими параметрами
+        // и сохраняем результат в переменную response.
+        HttpResponse response = HttpClientHelper.get(URL+endpoint,null);
+        //Конвертируем входящий поток тела ответа в строку
+        String body=HttpClientHelper.getBodyFromResponse(response);
+        System.out.println(body);
+        String FName = JsonUtils.stringFromJSONByPath(body, "$.data.first_name");
+        Assert.assertEquals("Name correct", "Janet", FName);
 
     //TODO: напишите по тесткейсу на каждый вариант запроса на сайте https://reqres.in
     //TODO: в тескейсах проверьте Result Code и несколько параметров из JSON ответа (если он есть)
 
 }
+    @Test//GET метод
+    public void checkGetResponseLastName() throws IOException {
+        String endpoint="/api/users/2";
+        //Выполняем REST GET запрос с нашими параметрами
+        // и сохраняем результат в переменную response.
+        HttpResponse response = HttpClientHelper.get(URL+endpoint,null);
+        //Конвертируем входящий поток тела ответа в строку
+        String body=HttpClientHelper.getBodyFromResponse(response);
+        System.out.println(body);
+        String LastName = JsonUtils.stringFromJSONByPath(body, "$.data.last_name");
+        System.out.println(LastName);
+        Assert.assertEquals("Name check", "Weaver", LastName);}}
