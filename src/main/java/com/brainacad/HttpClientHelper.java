@@ -1,9 +1,11 @@
 package com.brainacad;
 
+import io.qameta.allure.Allure;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 
@@ -26,6 +28,7 @@ public class HttpClientHelper {
 
     //REST GET запрос
     public static HttpResponse get(String endpointUrl, String parameters, Map<String, String> headers) throws IOException {
+        Allure.addAttachment("GET input parameters", "endpointURL: "+endpointUrl+" Perameters:"+ parameters);
         //Создаём экземпляр HTTP клиента
         HttpClient client = HttpClientBuilder.create().build();
         //Создаём HTTP GET запрос из URL и параметров
@@ -38,7 +41,8 @@ public class HttpClientHelper {
 
         //выполняем запрос в HTTP клиенте и получаем ответ
         HttpResponse response = client.execute(request);
-
+        Allure.addAttachment("GET response status code", "Status code: "+response.getStatusLine().getStatusCode());
+        Allure.addAttachment("GET response body", "responce body: "+getBodyFromResponse(response));
         //возвращаем response
         return response;
     }
@@ -87,7 +91,35 @@ public class HttpClientHelper {
         }
         return result.toString();
     }
+    //TODO: допишите методы для запросов PUT
+    public static HttpResponse put(String endpointUrl, String parameters)throws IOException {
+        //TODO: написать метод для Put запроса с хедерами по умолчанию
+        Map<String, String> headers = new HashMap<>();
+        headers.put("User-Agent", "My-Test-User-Agent");
+        return put(endpointUrl, parameters, headers);
+    }
 
-    //TODO: допишите методы для запросов PUT, PATCH и DELETE
+    public static HttpResponse put(String endpointUrl, String body, Map<String, String> headers) throws IOException{
+        //Создаём экземпляр HTTP клиента
+        HttpClient client = HttpClientBuilder.create().build();
+        //Создаём HTTP PUT запрос из URL и параметров
+        HttpPut put = new HttpPut(endpointUrl);
+
+        //добавляем в запрос необходимые хедеры
+        for(String headerKey:headers.keySet()) {
+            put.addHeader(headerKey, headers.get(headerKey));
+        }
+
+        //добавляем к запросу тело запроса
+        put.setEntity(new StringEntity(body));
+
+        //выполняем запрос в HTTP клиенте и получаем ответ
+        HttpResponse response = client.execute(put);
+
+        //возвращаем response
+        return response;
+    }
+
+    //TODO: допишите методы для запросов PATCH и DELETE
 
 }

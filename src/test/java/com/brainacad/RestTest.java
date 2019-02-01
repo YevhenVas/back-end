@@ -104,7 +104,7 @@ public class RestTest{
 
         //Выполняем REST GET запрос с нашими параметрами
         // и сохраняем результат в переменную response.
-        HttpResponse response = HttpClientHelper.get(URL+endpoint,null);
+        HttpResponse response = HttpClientHelper.get(URL+endpoint,"");
 
         //получаем статус код из ответа
         int statusCode = response.getStatusLine().getStatusCode();
@@ -129,7 +129,7 @@ public class RestTest{
         String endpoint="/api/users/2";
         //Выполняем REST GET запрос с нашими параметрами
         // и сохраняем результат в переменную response.
-        HttpResponse response = HttpClientHelper.get(URL+endpoint,null);
+        HttpResponse response = HttpClientHelper.get(URL+endpoint,"");
         //Конвертируем входящий поток тела ответа в строку
         String body=HttpClientHelper.getBodyFromResponse(response);
         System.out.println(body);
