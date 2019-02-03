@@ -4,6 +4,7 @@ import io.qameta.allure.Allure;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
@@ -42,7 +43,7 @@ public class HttpClientHelper {
         //выполняем запрос в HTTP клиенте и получаем ответ
         HttpResponse response = client.execute(request);
         Allure.addAttachment("GET response status code", "Status code: "+response.getStatusLine().getStatusCode());
-        Allure.addAttachment("GET response body", "responce body: "+getBodyFromResponse(response));
+        Allure.addAttachment("GET response body", "response body: "+getBodyFromResponse(response));
         //возвращаем response
         return response;
     }
@@ -104,6 +105,33 @@ public class HttpClientHelper {
         HttpClient client = HttpClientBuilder.create().build();
         //Создаём HTTP PUT запрос из URL и параметров
         HttpPut put = new HttpPut(endpointUrl);
+
+        //добавляем в запрос необходимые хедеры
+        for(String headerKey:headers.keySet()) {
+            put.addHeader(headerKey, headers.get(headerKey));
+        }
+
+        //добавляем к запросу тело запроса
+        put.setEntity(new StringEntity(body));
+
+        //выполняем запрос в HTTP клиенте и получаем ответ
+        HttpResponse response = client.execute(put);
+
+        //возвращаем response
+        return response;
+    }
+    public static HttpResponse patch(String endpointUrl, String parameters)throws IOException {
+        //TODO: написать метод для Put запроса с хедерами по умолчанию
+        Map<String, String> headers = new HashMap<>();
+        headers.patch("User-Agent", "My-Test-User-Agent");
+        return patch(endpointUrl, parameters, headers);
+    }
+
+    public static HttpResponse patch(String endpointUrl, String body, Map<String, String> headers) throws IOException{
+        //Создаём экземпляр HTTP клиента
+        HttpClient client = HttpClientBuilder.create().build();
+        //Создаём HTTP PUT запрос из URL и параметров
+        HttpPatch patch = new HttpPatch(endpointUrl);
 
         //добавляем в запрос необходимые хедеры
         for(String headerKey:headers.keySet()) {
