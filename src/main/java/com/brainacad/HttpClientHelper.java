@@ -3,10 +3,7 @@ package com.brainacad;
 import io.qameta.allure.Allure;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 
@@ -121,9 +118,9 @@ public class HttpClientHelper {
         return response;
     }
     public static HttpResponse patch(String endpointUrl, String parameters)throws IOException {
-        //TODO: написать метод для Put запроса с хедерами по умолчанию
+        //TODO: написать метод для Patch запроса с хедерами по умолчанию
         Map<String, String> headers = new HashMap<>();
-        headers.patch("User-Agent", "My-Test-User-Agent");
+        headers.put("User-Agent", "My-Test-User-Agent");
         return patch(endpointUrl, parameters, headers);
     }
 
@@ -135,18 +132,47 @@ public class HttpClientHelper {
 
         //добавляем в запрос необходимые хедеры
         for(String headerKey:headers.keySet()) {
-            put.addHeader(headerKey, headers.get(headerKey));
+            patch.addHeader(headerKey, headers.get(headerKey));
         }
 
         //добавляем к запросу тело запроса
-        put.setEntity(new StringEntity(body));
+        patch.setEntity(new StringEntity(body));
 
         //выполняем запрос в HTTP клиенте и получаем ответ
-        HttpResponse response = client.execute(put);
+        HttpResponse response = client.execute(patch);
 
         //возвращаем response
         return response;
     }
+/*
+    //TODO: допишите методы для запросов DELETE
+    public static HttpResponse delete(String endpointUrl, String parameters)throws IOException {
+        //TODO: написать метод для Patch запроса с хедерами по умолчанию
+        Map<String, String> headers = new HashMap<>();
+        headers.put("User-Agent", "My-Test-User-Agent");
+        return delete(endpointUrl, parameters, headers);
+    }
+
+    public static HttpResponse delete(String endpointUrl, String body, Map<String, String> headers) throws IOException{
+        //Создаём экземпляр HTTP клиента
+        HttpClient client = HttpClientBuilder.create().build();
+        //Создаём HTTP PUT запрос из URL и параметров
+        HttpDelete delete = new HttpDelete(endpointUrl);
+
+        //добавляем в запрос необходимые хедеры
+        for(String headerKey:headers.keySet()) {
+            delete.addHeader(headerKey, headers.get(headerKey));
+        }
+
+        //добавляем к запросу тело запроса
+        delete.setEntity(new StringEntity(body));
+
+        //выполняем запрос в HTTP клиенте и получаем ответ
+        HttpResponse response = client.execute(delete);
+
+        //возвращаем response
+        return response;
+    }*/
 
     //TODO: допишите методы для запросов PATCH и DELETE
 
